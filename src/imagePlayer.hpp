@@ -20,6 +20,7 @@ public:
 
     
     bool load(std::string text);
+    void loadImage();
     
     
     ofTexture *getTexture();
@@ -39,6 +40,9 @@ private:
     bool playing;
     bool isInverted=false;
     void invert();
+    
+    std::string path;
+    bool loaded;
     
 };
 

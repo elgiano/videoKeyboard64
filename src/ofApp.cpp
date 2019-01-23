@@ -97,6 +97,7 @@ void ofApp::loadSources(std::vector<SourceGroup> sourceGroups){
   if(old_captures<n_captures){
     initCapture();
   }
+    loadSet(activeSet);
 }
 
 void ofApp::registerAutoplayGroupForSet(int set_n,int first_video, int tot_videos){
@@ -195,7 +196,7 @@ void ofApp::loadSourceGroup(string path,int layout){
 
     subdir.listDir();
     subdir.sort();
-    int tot_videos = subdir.size();
+    unsigned long tot_videos = subdir.size();
     std::map<string,float> volumes;
     // check rms file for clip volumes
     if(ofFile(path+"/rms").isFile()){
@@ -203,15 +204,19 @@ void ofApp::loadSourceGroup(string path,int layout){
     }
 
     for(int k=0;k<tot_videos && n_videos<MAX_VIDEOS;k++){
-      if(ofFile(subdir.getPath(k)).isFile()){
-        movie[n_videos].load(subdir.getPath(k));
+        std::string thisPath = subdir.getPath(k);
+      if(ofFile(thisPath).isFile()){
+        movie[n_videos].load(thisPath);
+        /*MovieLoader *ml = new MovieLoader();
+          ml->setup(&(movie[n_videos]),thisPath);
+          ml->startThread();*/
         initVideoVariables(n_videos);
         //cout << subdir.getPath(k) << endl;
-        if(volumes[subdir.getPath(k)]>0){
-          videoRms[n_videos] = volumes[subdir.getPath(k)];
+        if(volumes[thisPath]>0){
+          videoRms[n_videos] = volumes[thisPath];
         }
         layout_for_video[n_videos] = layout;
-        cout << "Preloading " << n_videos  <<" "<< subdir.getPath(k)<< endl;
+        cout << "Preloading " << n_videos  <<" "<< thisPath<< endl;
 
         n_videos++;
 
@@ -266,12 +271,21 @@ void ofApp::loadSet(int set_n){
   activeSet = set_n;
   if(loadedSets>0)  activeSet = set_n%loadedSets;
 
-  for(auto autoplay : autoplayGroupsForSet[activeSet]){
-    cout << "autoplay " << endl;
-    for(int i=0;i<autoplay[1];i++){
-      playVideo(autoplay[0]+1,1.0);
+    // try to preload videos
+    /*int end= (activeSet < (loadedSets-1)) ? ( setStart[activeSet+1]) : n_videos;
+    for(int i=setStart[activeSet];i<end;i++){
+        if(movie[i].contentType == MovieType::hap ){
+        movie[i].play();
+        movie[i].update();
+        movie[i].stop();
+        }
+    }*/
+    for(auto autoplay : autoplayGroupsForSet[activeSet]){
+        cout << "autoplay " << endl;
+        for(int i=0;i<autoplay[1];i++){
+            playVideo(autoplay[0]+1,1.0);
+        }
     }
-  }
 }
 
 // ### DRAW ###

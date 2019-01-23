@@ -111,6 +111,8 @@ private:
     int currentLine = 0;
 
     float lastUpdateTime;
+    
+    void allocateFbos();
 
     void slideAnimation(int x,int y);
     void wordFadeAnimation(int x,int y);

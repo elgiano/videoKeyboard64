@@ -239,32 +239,67 @@ class ofApp : public ofBaseApp, public ofxMidiListener{
 };
 
 /*class SoundFader : public ofThread {
+ 
+ public:
+ int deltams = 1;
+ 
+ void setup(ofApp *controller,int key) {
+ movieN = key;
+ ctrl = controller;
+ ofAddListener(ofEvents().exit,this,&SoundFader::handleExit);
+ }
+ 
+ void threadedFunction() {
+ ctrl->setVideoVolume(movieN,0);
+ while(isThreadRunning()){
+ ctrl->soundFades(movieN);
+ std::this_thread::sleep_for(std::chrono::milliseconds(deltams));
+ }
+ }
+ 
+ void handleExit(ofEventArgs &e)
+ {
+ if(isThreadRunning())
+ waitForThread();
+ }
+ 
+ 
+ private:
+ ofApp *ctrl;
+ int movieN;
+ };*/
 
-public:
-  int deltams = 1;
+class MovieLoader : public ofThread {
+      
+      public:
+      int deltams = 1;
+      
+    void setup(MovieContainer *_movie, std::string _path) {
+      movie = _movie;
+      path = _path;
+      ofAddListener(ofEvents().exit,this,&MovieLoader::handleExit);
+      }
+      
+      void threadedFunction() {
+         
+          //lock();
+          movie->load(path);
+          //unlock();
+          stopThread();
+      }
+      
+      void handleExit(ofEventArgs &e)
+      {
+      if(isThreadRunning())
+      waitForThread();
+      }
+      
+      
+      private:
+      MovieContainer *movie;
+      int movieN;
+      std::string path;
 
-  void setup(ofApp *controller,int key) {
-    movieN = key;
-    ctrl = controller;
-    ofAddListener(ofEvents().exit,this,&SoundFader::handleExit);
-  }
-
-  void threadedFunction() {
-    ctrl->setVideoVolume(movieN,0);
-    while(isThreadRunning()){
-      ctrl->soundFades(movieN);
-      std::this_thread::sleep_for(std::chrono::milliseconds(deltams));
-    }
-  }
-
-  void handleExit(ofEventArgs &e)
-  {
-        if(isThreadRunning())
-            waitForThread();
-  }
+};
 
 
-private:
-  ofApp *ctrl;
-  int movieN;
-};*/
