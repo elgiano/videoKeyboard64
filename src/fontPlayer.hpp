@@ -99,7 +99,7 @@ private:
     vector <string> lines;
 
 
-    int fontSize=20;//24;
+    int fontSize=20;//20;//24;
 
     bool reverse = false;
     float animationSpeed = 1.0f;
@@ -123,8 +123,9 @@ private:
 
     
     void drawConstellation();
+    void drawConstellationZooming();
     void drawConstellationMask();
-    void drawConstellationWord(int i);
+    void drawConstellationWord(int i,float zoom=1.0f);
 
 
 
