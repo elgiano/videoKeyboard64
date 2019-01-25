@@ -10,6 +10,13 @@
 // LOADING
 
 bool ImagePlayer::load(std::string text){
+    std::string name = ofFile(text).getFileName();
+    std::size_t found = name.rfind(".");
+    invertable = false;
+    if(found != std::string::npos){
+        invertable = name[found-1] == '*';
+    }
+    
     return image.load(text);
 };
 
@@ -21,6 +28,7 @@ ofTexture* ImagePlayer::getTexture(){
 
 
 void ImagePlayer::invert(){
+    if(!invertable) return;
     isInverted = !isInverted;
 
     ofPixels invertedPixs = image.getPixels();

@@ -99,7 +99,7 @@ private:
     vector <string> lines;
 
 
-    int fontSize=20;//20;//24;
+    int fontSize=20;//24;
 
     bool reverse = false;
     float animationSpeed = 1.0f;
@@ -119,7 +119,7 @@ private:
     void wordFadeAnimationReverse(int x,int y);
     void wordFadeAnimationConstellation();
     void targetWordAnimation(int x,int y);
-    void constellationTrembleAnimation();
+    void constellationTrembleAnimation(bool transparency=false);
 
     
     void drawConstellation();

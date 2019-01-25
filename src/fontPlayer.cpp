@@ -31,8 +31,8 @@ bool isPrime(long int n)
 bool FontPlayer::load(std::string text,int size){
 
     if(!this->fbo.isAllocated()){
-        this->fbo.allocate(ofGetScreenWidth(),ofGetScreenHeight(),GL_RGBA,8);
-        this->maskFbo.allocate(ofGetScreenWidth(),ofGetScreenHeight(),GL_RGBA,8);
+        this->fbo.allocate(ofGetScreenWidth(),ofGetScreenHeight(),GL_RGBA,32);
+        this->maskFbo.allocate(ofGetScreenWidth(),ofGetScreenHeight(),GL_RGBA,32);
         clearFbos();
     }
 
@@ -201,7 +201,7 @@ void FontPlayer::update(){
     }else{
         switch(animationType){
             case AnimationType::SLIDE:  /*this->drawConstellationMask()*/this->constellationTrembleAnimation();break;
-            case AnimationType::WORDFADE:    this->wordFadeAnimationConstellation();break;
+                case AnimationType::WORDFADE:    /*this->wordFadeAnimationConstellation();*/this->constellationTrembleAnimation(true);break;
             case AnimationType::TARGETWORD:    this->constellationTrembleAnimation();break;
         }
         //ofDrawRectangle(0, 0, getWidth(), getHeight());
@@ -218,12 +218,13 @@ void FontPlayer::update(){
     if(spreadMode==SpreadMode::TOGETHER){
         this->font.drawString(wrappedText,x,y);
     }else if(spreadMode==SpreadMode::SPREAD){
-        if(animationType == AnimationType::TARGETWORD){
-            this->drawConstellationZooming();
-        }else{
+        if(animationType == AnimationType::SLIDE){
             this->drawConstellation();
+        }else{
+            this->drawConstellationZooming();
         }
         //this->drawConstellationMask();
+        //this->constellationTrembleAnimation();
     }
     this->fbo.end();
 
@@ -514,7 +515,7 @@ void FontPlayer::makeConstellation(){
     constellation.clear();
     constellation = std::vector<ofRectangle>(words.size(),ofRectangle());
     
-    int n = words.size();
+    unsigned long n = words.size();
     if(isPrime(n)) n++;
     int columns;
     for (columns = (int)ceil(sqrt(n)); columns > 1; --columns) {
@@ -546,7 +547,9 @@ void FontPlayer::makeConstellation(){
 void FontPlayer::drawConstellation(){
     
     for(int i=0;i<words.size();i++){
-        float randFactor = (i%16) *0.025 + 0.6;
+        //float randFactor = (i%16) *0.025 + 0.6;
+        float randFactor = (i%8) *0.025 + 0.6;
+
         float thisScale = fontScale*randFactor;
         ofPushMatrix();
         ofScale(thisScale,thisScale,1);
@@ -558,7 +561,9 @@ void FontPlayer::drawConstellation(){
 
 void FontPlayer::drawConstellationZooming(){
     for(int i=0;i<words.size();i++){
-        float randFactor = (i%16) *0.025 + 0.6;
+        //float randFactor = (i%16) *0.025 + 0.6;
+        float randFactor = (i%8) *0.025 + 0.6;
+
         int cycleDur = int((20+(i+1)*2)/animationSpeed*1000);
         float progress = (int(animationCurrPos*1000) % cycleDur)/(float)cycleDur;
         if(progress<=0.5){
@@ -606,7 +611,7 @@ void FontPlayer::drawConstellationMask(){
 
 }
 
-void FontPlayer::constellationTrembleAnimation(){
+void FontPlayer::constellationTrembleAnimation(bool transparency){
     
     
     for(int i =0; i< constellation.size(); i++){
@@ -618,11 +623,25 @@ void FontPlayer::constellationTrembleAnimation(){
             progress = (1-progress)*2;
         }
         progress = 3*pow(progress,2) - (2*pow(progress,3));
-        ofSetColor(color,progress*255);
-        if(animationType == AnimationType::TARGETWORD){
-            drawConstellationWord(i,progress);
-        }else{
-            drawConstellationWord(i);
+        
+        switch (animationType ) {
+                case AnimationType::SLIDE:
+                ofSetColor(color,progress*255);
+                drawConstellationWord(i);
+                break;
+                
+                case AnimationType::WORDFADE:
+                ofSetColor(color,255);
+                drawConstellationWord(i,progress);
+                break;
+                
+                case AnimationType::TARGETWORD:
+                ofSetColor(color,progress*255);
+                drawConstellationWord(i,progress);
+                break;
+
+            default:
+                break;
         }
     }
     
@@ -632,7 +651,8 @@ void FontPlayer::constellationTrembleAnimation(){
 void FontPlayer::drawConstellationWord(int i,float zoom){
     ofRectangle rect = constellation[i];
     ofPushMatrix();
-    float randFactor = (i%16) *0.025 + 0.6;
+    //float randFactor = (i%16) *0.025 + 0.6;
+    float randFactor = (i%8) *0.025 + 0.6;
     float thisScale = fontScale*randFactor;
     thisScale *= zoom;
     ofScale(thisScale,thisScale,1);

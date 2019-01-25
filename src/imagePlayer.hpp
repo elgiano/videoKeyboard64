@@ -43,6 +43,7 @@ private:
     
     std::string path;
     bool loaded;
+    bool invertable;
     
 };
 
