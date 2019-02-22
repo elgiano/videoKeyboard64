@@ -26,7 +26,8 @@ enum class MovieType {
 class MovieContainer {
     
     ofxHapPlayer *hapMovie;
-    FontPlayer *fontPlayer;
+    MultiFontPlayer *fontPlayer;
+    //FontPlayer *fontPlayer;
     ImagePlayer *imagePlayer;
 
     

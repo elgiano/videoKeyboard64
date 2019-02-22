@@ -17,7 +17,8 @@ bool MovieContainer::load(std::string name){
         return hapMovie->load(name);
     }else if (ext == "txt"){
         contentType=MovieType::txt;
-        fontPlayer = new FontPlayer();
+        //fontPlayer = new FontPlayer();
+        fontPlayer = new MultiFontPlayer();
         ofBuffer buffer = ofBufferFromFile(name); // reading into the buffer
         return fontPlayer->load(buffer.getText());
     }else{
@@ -163,7 +164,7 @@ void  MovieContainer::update(){
 
 void  MovieContainer::setColor(ofColor col){
     if(contentType==MovieType::txt){
-        fontPlayer->color = col;
+        fontPlayer->setColor(col);
     }
 };
 
