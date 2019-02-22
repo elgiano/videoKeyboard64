@@ -38,7 +38,7 @@ bool FontPlayer::load(std::string text,int size){
 
     this->text = parseText(text);
     this->parseTargetWords();
-    this->setFontSize(size);
+    this->setFontSize(size>0?size:fontSize);
     
     makeConstellation();
 
@@ -48,7 +48,7 @@ bool FontPlayer::load(std::string text,int size){
 };
 
 bool FontPlayer::load(std::string text){
-    return this->load(text,fontSize);
+    return this->load(text,0);
 };
 
 
@@ -101,6 +101,9 @@ std::string FontPlayer::parseText(std::string text){
                             this->lettersPerSecond = value;
                             this->reverse = false;
                         };
+                        break;
+                    case 7:
+                        this->fontSize = (int)value;
                         break;
                     
 
@@ -216,7 +219,7 @@ void FontPlayer::update(){
     /*rect = this->font.getStringBoundingBox(wrappedText,x, y);
     ofSetColor(255,0,0); ofDrawRectangle(rect.x, rect.y, rect.width, rect.height);ofSetColor(color);*/
     if(spreadMode==SpreadMode::TOGETHER){
-        this->font.drawString(wrappedText,x,y);
+        this->font.drawStringAsShapes(wrappedText,x,y);
     }else if(spreadMode==SpreadMode::SPREAD){
         if(animationType == AnimationType::SLIDE){
             this->drawConstellation();
