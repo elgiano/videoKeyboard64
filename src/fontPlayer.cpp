@@ -775,3 +775,84 @@ float FontPlayer::getDuration() const{ return this->text.length();};
 
 bool  FontPlayer::isPlaying() const{ return this->playing;};
 void  FontPlayer::setSpeed(float speed){ this->animationSpeed = speed;};
+void  FontPlayer::setColor(ofColor col){ this->color = col;};
+
+// MULTI FONT PLAYER
+
+ofTexture *MultiFontPlayer::getTexture(){
+    if(players.size()>1 && fbo.isAllocated()){
+            return &(fbo.getTexture());
+        
+    }else{
+        return players[0]->getTexture();
+    }
+};
+
+bool MultiFontPlayer::load(std::string text){
+    vector <string> lines = ofSplitString(text,"\n");
+    vector <string> txts;
+    
+    for(auto &line: lines){
+        if(line.front() == '#' || txts.size() == 0){
+            txts.push_back(line);
+        }else{
+            txts[txts.size()-1] += '\n' + line;
+        }
+    }
+    players.reserve(txts.size());
+
+    for(auto &txt: txts){
+        FontPlayer *player = new FontPlayer();
+        player->load(txt);
+        players.push_back(player);
+    }
+    
+
+    
+    return true;
+    
+};
+void  MultiFontPlayer::setFontScale(float scale){ for(auto &player : players){
+    player->setFontScale(scale);
+}};
+
+void  MultiFontPlayer::setColor(ofColor col){ for(auto &player : players){
+    player->color = col;
+}};
+
+void  MultiFontPlayer::play(){ for(auto &player : players){
+    player->play();
+}};
+void  MultiFontPlayer::stop(){ for(auto &player : players){
+    player->stop();
+}};
+void  MultiFontPlayer::update(){ for(auto &player : players){
+    player->update();
+}
+    if(players.size()>1){
+        if(!fbo.isAllocated())     fbo.allocate(ofGetScreenWidth(),ofGetScreenHeight(),GL_RGBA,8);
+        
+        fbo.begin();
+        ofClear(255,255,255,0);
+        for(auto &player : players){
+            player->getTexture()->draw(0,0);
+        };
+        fbo.end();
+    }
+};
+void MultiFontPlayer::nextFrame(){};
+
+float MultiFontPlayer::getWidth() const{ return players[0]->getWidth();};
+float MultiFontPlayer::getHeight() const{ return players[0]->getHeight();};
+
+float MultiFontPlayer::getPosition() const{ return players[0]->animationCurrPos;};
+float MultiFontPlayer::setPosition(float pct){ for(auto &player : players){
+    player->animationCurrPos = pct;
+};return pct;};
+float MultiFontPlayer::getDuration() const{ return players[0]->text.length();};
+
+bool  MultiFontPlayer::isPlaying() const{ return players[0]->playing;};
+void  MultiFontPlayer::setSpeed(float speed){ for(auto &player : players){
+    player->animationSpeed = speed;
+}};
+

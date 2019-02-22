@@ -12,6 +12,7 @@
 #include <string>
 #include "ofMain.h"
 
+class MultiFontPlayer;
 class FontPlayer{
 
 
@@ -85,8 +86,11 @@ public:
 
     bool  isPlaying() const;
     void  setSpeed(float speed);
+    void setColor(ofColor col);
+
     
 private:
+    friend class MultiFontPlayer;
     ofTrueTypeFont font;
     ofTexture texture;
     ofFbo fbo;
@@ -146,8 +150,41 @@ private:
     void makeConstellation();
 
 
+
     void clearFbos();
 
+};
+
+class MultiFontPlayer{
+    
+    ofFbo fbo;
+    
+public:
+    
+    ofTexture *getTexture();
+    
+    bool load(std::string text);
+    void setFontScale(float scale);
+
+    void play();
+    void stop();
+    void update();
+    void nextFrame();
+    
+    float getWidth() const;
+    float getHeight() const;
+    
+    float getPosition() const;
+    float setPosition(float pct);
+    float getDuration() const;
+    
+    bool  isPlaying() const;
+    void  setSpeed(float speed);
+    
+    void setColor(ofColor col);
+    
+private:
+    std::vector<FontPlayer*> players;
 };
 
 #endif /* fontPlayer_hpp */
