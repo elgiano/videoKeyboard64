@@ -653,15 +653,14 @@ void ofApp::update(){
                        ){
                         cout <<  "stuttering " << i << " " << movie[i].getPosition() << endl;
                         cout  << ofClamp(stutterStart[i]-stutterDurGlobal/movie[i].getDuration(),0,1) << " " << stutterStart[i]  << endl;
-
                         movie[i].setPosition(ofClamp(stutterStart[i]-stutterDurGlobal/movie[i].getDuration(),0,1));
                         movie[i].update();
-                        while(movie[i].getPosition() < ofClamp(stutterStart[i]-stutterDurGlobal/movie[i].getDuration(),0,1)){
+                        /*while(movie[i].getPosition() < ofClamp(stutterStart[i]-stutterDurGlobal/movie[i].getDuration(),0,1)){
                             movie[i].nextFrame();
                             movie[i].update();
                             cout <<  "nextframe " << i << " " << movie[i].getPosition() << endl;
                             cout  << ofClamp(stutterStart[i]-stutterDurGlobal/movie[i].getDuration(),0,1) << " " << stutterStart[i]  << endl;
-                        }
+                        }*/
                         // movie[i].setPosition(stutterStart[i]);
                         //movie[i].play();
                         //movie[i].setLoopState(OF_LOOP_NORMAL);
@@ -1044,7 +1043,8 @@ float ofApp::harmonicLoopDur(int key){
 // ### INPUT: midi input and setup is in midiInterface.cpp ####
 
 void ofApp::keyPressed(int key){
-
+    
+    if(key == 3686) return;
   key = tolower(key);
   if(key==(-1)){
     sustain = sustain == 0 ? 1 : 0;
@@ -1057,6 +1057,8 @@ void ofApp::keyPressed(int key){
 
 //--------------------------------------------------------------
 void ofApp::keyReleased(int key){
+    if(key == 3686) return;
+
   key = tolower(key);
   stopVideo(midiNoteToVideoKey(key-49));
   //cout << ofToString(key) << " released" << endl;

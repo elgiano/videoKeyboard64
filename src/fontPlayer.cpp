@@ -219,7 +219,15 @@ void FontPlayer::update(){
     /*rect = this->font.getStringBoundingBox(wrappedText,x, y);
     ofSetColor(255,0,0); ofDrawRectangle(rect.x, rect.y, rect.width, rect.height);ofSetColor(color);*/
     if(spreadMode==SpreadMode::TOGETHER){
+        
+        /*ofPushMatrix();
+        ofScale(fontScale,fontScale,1);
+        font.drawStringAsShapes(wrappedText,ceil(x/fontScale),(y/fontScale));
+        ofPopMatrix();*/
+        
         this->font.drawStringAsShapes(wrappedText,x,y);
+        
+        
     }else if(spreadMode==SpreadMode::SPREAD){
         if(animationType == AnimationType::SLIDE){
             this->drawConstellation();
@@ -417,6 +425,11 @@ void FontPlayer::showCompletedLines(int x,int y){
     ofSetColor(color,255);
     ofRectangle completedLinesBox = getTextBoxToCurrentLine(x, y, 0);
     ofDrawRectangle(completedLinesBox.x, completedLinesBox.y, completedLinesBox.width, completedLinesBox.height);
+    
+    /*ofPushMatrix();
+    ofScale(fontScale,fontScale,1);
+    font.drawStringAsShapes(wrappedText,ceil(x/fontScale),(y/fontScale));
+    ofPopMatrix();*/
 }
 
 int FontPlayer::showCompletedWords(){
@@ -828,7 +841,11 @@ void  MultiFontPlayer::play(){ for(auto &player : players){
 }};
 void  MultiFontPlayer::stop(){ for(auto &player : players){
     player->stop();
-}};
+};
+    fbo.begin();
+    ofClear(255,255,255,0);
+    fbo.end();
+};
 void  MultiFontPlayer::update(){ for(auto &player : players){
     player->update();
 }
