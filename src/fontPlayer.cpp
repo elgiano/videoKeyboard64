@@ -141,7 +141,7 @@ void FontPlayer::parseTargetWords(){
 }
 
 std::string FontPlayer::setFontSize(int size){
-    this->font.load("../NotoSans-SemiCondensed.ttf",size,true,true,true,0,0);
+    this->font.load("../HelveticaNeue.ttf",size,true,true,true,0,0);
     fontSize = size;
     return this->wrappedText = this->wrapText();
 }
@@ -224,8 +224,9 @@ void FontPlayer::update(){
         ofScale(fontScale,fontScale,1);
         font.drawStringAsShapes(wrappedText,ceil(x/fontScale),(y/fontScale));
         ofPopMatrix();*/
-        
+
         this->font.drawStringAsShapes(wrappedText,x,y);
+       
         
         
     }else if(spreadMode==SpreadMode::SPREAD){
@@ -237,6 +238,8 @@ void FontPlayer::update(){
         //this->drawConstellationMask();
         //this->constellationTrembleAnimation();
     }
+    
+    
     this->fbo.end();
 
     this->lastUpdateTime = callTime;
@@ -763,6 +766,10 @@ ofTexture* FontPlayer::getTexture(){
     return &fbo.getTexture();
 };
 
+ofTexture FontPlayer::getFontTexture(){
+    return font.getFontTexture();
+};
+
 void FontPlayer::play(){
     this->animationCurrPos = 0;
     this->lastUpdateTime = 0;
@@ -802,6 +809,10 @@ ofTexture *MultiFontPlayer::getTexture(){
     }else{
         return players[0]->getTexture();
     }
+};
+
+ofTexture MultiFontPlayer::getFontTexture(){
+    return players[0]->getFontTexture();
 };
 
 bool MultiFontPlayer::load(std::string text){

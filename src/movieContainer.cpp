@@ -31,6 +31,12 @@ bool MovieContainer::load(std::string name){
     
 };
 
+ofTexture MovieContainer::getFontTexture(){
+    if(contentType==MovieType::txt){
+        return fontPlayer->getFontTexture();
+    }
+}
+
 ofTexture * MovieContainer::getTexture(){
     if(contentType==MovieType::hap){
         return hapMovie->getTexture();

@@ -61,6 +61,8 @@ class MovieContainer {
     
     void                        setFontScale(float scale);
     void                        setImageNegative(bool negative);
+    
+    ofTexture getFontTexture();
 
     
         /*

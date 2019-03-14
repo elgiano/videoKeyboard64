@@ -22,6 +22,8 @@ bool ImagePlayer::load(std::string text){
 
 // OTHER
 
+
+
 ofTexture* ImagePlayer::getTexture(){
     return &image.getTexture();
 };

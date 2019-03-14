@@ -35,6 +35,8 @@ void ofApp::setup(){
   //ofBackground(255,255,255);
   ofEnableAlphaBlending();
   ofSetFrameRate(120);
+    
+    ofTrueTypeFont::setGlobalDpi(300);
 }
 
 // ####### CAPTURE  #########
@@ -403,6 +405,7 @@ void ofApp::drawVideoInLayout(int movieN){
         }
         //ofSetColor(255,255,255,255);
         thisTexture.draw(0,0);
+        
     }else{
         // temp: disable layouts
 
@@ -450,6 +453,9 @@ void ofApp::drawVideoInLayout(int movieN){
                                          0,(h-w*screenH/screenW)/2,
                                          w,w*screenH/screenW);
           }
+          
+          //thisTexture.draw(0,(screenH-(screenW*h/w))/2, screenW, screenW*h/w);
+          
 
       break;
     case 1:
@@ -1044,22 +1050,23 @@ float ofApp::harmonicLoopDur(int key){
 
 void ofApp::keyPressed(int key){
     
-    if(key == 3686) return;
+ /*   if(key == 3686) return;
   key = tolower(key);
   if(key==(-1)){
     sustain = sustain == 0 ? 1 : 0;
     if(sustain == 0){stopSustain();}
   }else{
     playVideo(midiNoteToVideoKey(key-49),1.0);
-  }
+  }*/
 
 }
 
 //--------------------------------------------------------------
 void ofApp::keyReleased(int key){
-    if(key == 3686) return;
+ /* if(key == 3686) return;
 
   key = tolower(key);
   stopVideo(midiNoteToVideoKey(key-49));
   //cout << ofToString(key) << " released" << endl;
+  */
 }

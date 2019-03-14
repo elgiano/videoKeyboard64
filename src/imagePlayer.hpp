@@ -28,7 +28,7 @@ public:
     void play();
     void stop();
     void update();
-    
+        
     float getWidth() const;
     float getHeight() const;
     bool inverted=false;

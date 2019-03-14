@@ -88,6 +88,8 @@ public:
     void  setSpeed(float speed);
     void setColor(ofColor col);
 
+    ofTexture getFontTexture();
+
     
 private:
     friend class MultiFontPlayer;
@@ -182,6 +184,8 @@ public:
     void  setSpeed(float speed);
     
     void setColor(ofColor col);
+    
+    ofTexture getFontTexture();
     
 private:
     std::vector<FontPlayer*> players;
