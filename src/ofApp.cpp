@@ -321,7 +321,7 @@ void ofApp::drawVideoInLayout(int movieN){
     // if fade_out is 0 or fade switch is off, and video was already stopped, deactivate it
     // the real stopping of videos happens here for threading sake
     if(fo_start[movieN] > 0){
-      if(fade_out==0 || !isFading){
+      if((fade_out==0 || !isFading) && movie[movieN].contentType!=MovieType::txt){
           fo_alpha = 0;
           if((now-fo_start[movieN])>sound_fadeTime){
               deactivateVideo(movieN);fo_start[movieN] = 0.0;return;
@@ -329,14 +329,16 @@ void ofApp::drawVideoInLayout(int movieN){
               return; // just dont draw if waiting for soundfade to finish
           }
       }else{
+        
+        float fo = (movie[movieN].contentType==MovieType::txt)?2:fade_out;
         // otherwise update the fade out
         fo_alpha = now-fo_start[movieN];
 
         // kill video if fade ended
-        if(fo_alpha>fade_out){deactivateVideo(movieN);fo_start[movieN] = 0.0;return;}
+        if(fo_alpha>fo){deactivateVideo(movieN);fo_start[movieN] = 0.0;return;}
 
-        fo_alpha = 1-(fo_alpha/fade_out);
-
+        fo_alpha = 1-(fo_alpha/fo);
+          fo_alpha = 3*pow(fo_alpha,2) - (2*pow(fo_alpha,3));
       }
     }
 
@@ -391,17 +393,18 @@ void ofApp::drawVideoInLayout(int movieN){
     if(movie[movieN].contentType==MovieType::txt){
         ofEnableAlphaBlending();
         if(blending_multiply){
-            //movie[movieN].setColor(ofColor(0,0,0,255));
+            //movie[movieN].setColor(ofColor(255,255,255,255*fo_alpha));
             //ofSetColor(0,0,0,255);
+            ofSetColor(255,255,255,255*fo_alpha);
 
         }else if( blending_add ){
             //drawWhiteBg(0,0, screenW, screenH);
-            ofSetColor(0,0,0,255);
+            ofSetColor(0,0,0,255*fo_alpha);
 
         }else{
-            movie[movieN].setColor(ofColor(255,255,255,255));
+            //movie[movieN].setColor(ofColor(255,255,255,255*fo_alpha));
 
-            ofSetColor(255,255,255,255);
+            ofSetColor(255,255,255,255*fo_alpha);
         }
         //ofSetColor(255,255,255,255);
         thisTexture.draw(0,0);

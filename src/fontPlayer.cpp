@@ -202,12 +202,12 @@ void FontPlayer::update(){
         //ofDrawRectangle(0, 0, getWidth(), getHeight());
         
     }else{
-        switch(animationType){
-            case AnimationType::SLIDE:  /*this->drawConstellationMask()*/this->constellationTrembleAnimation();break;
-                case AnimationType::WORDFADE:    /*this->wordFadeAnimationConstellation();*/this->constellationTrembleAnimation(true);break;
-            case AnimationType::TARGETWORD:    this->constellationTrembleAnimation();break;
-        }
-        //ofDrawRectangle(0, 0, getWidth(), getHeight());
+        //switch(animationType){
+            //case AnimationType::SLIDE:  /*this->drawConstellationMask()*/this->constellationTrembleAnimation();break;
+                //case AnimationType::WORDFADE:    /*this->wordFadeAnimationConstellation();*/this->constellationTrembleAnimation(true);break;
+            //case AnimationType::TARGETWORD:    this->constellationTrembleAnimation();break;
+        //}
+        ofDrawRectangle(0, 0, getWidth(), getHeight());
     }
     this->maskFbo.end();
 
@@ -612,13 +612,19 @@ void FontPlayer::drawConstellation(){
         float thisScale = fontScale*randFactor;
         ofPushMatrix();
         ofScale(thisScale,thisScale,1);
-        font.drawStringAsShapes(words[i],ceil(constellation[i].x/thisScale),(constellation[i].y/thisScale));
+        ofVboMesh mesh;
+        mesh = this->font.getStringMesh(words[i], ceil(constellation[i].x/thisScale), ceil(constellation[i].y/thisScale));
+        // draw
+        this->font.getFontTexture().bind();
+        mesh.draw();
+        this->font.getFontTexture().unbind();
         ofPopMatrix();
     }
         
 }
 
 void FontPlayer::drawConstellationZooming(){
+    
     for(int i=0;i<words.size();i++){
         //float randFactor = (i%16) *0.025 + 0.6;
         float randFactor = (i%8) *0.025 + 0.6;
@@ -636,7 +642,13 @@ void FontPlayer::drawConstellationZooming(){
         thisScale *=progress;
         ofPushMatrix();
         ofScale(thisScale,thisScale,1);
-        font.drawStringAsShapes(words[i],floor(constellation[i].x/thisScale),floor(constellation[i].y/thisScale));
+        ofVboMesh mesh;
+        mesh = this->font.getStringMesh(words[i], floor(constellation[i].x/thisScale), floor(constellation[i].y/thisScale));
+        // draw
+        this->font.getFontTexture().bind();
+        ofSetColor(color,255*(animationType==AnimationType::WORDFADE?1:progress));
+        mesh.draw();
+        this->font.getFontTexture().unbind();
         ofPopMatrix();
     }
 }
