@@ -37,12 +37,9 @@ bool FontPlayer::load(std::string text,int size){
     }
 
     this->text = parseText(text);
-    this->parseTargetWords();
+    if(this->spreadMode == SpreadMode::TOGETHER && this->animationType == AnimationType::TARGETWORD) this->parseTargetWords();
     this->setFontSize(size>0?size:fontSize);
-    
-    makeConstellation();
-
-
+    if(this->spreadMode == SpreadMode::SPREAD) makeConstellation();
 
     return true;
 };
@@ -197,10 +194,13 @@ void FontPlayer::update(){
     ofClear(255,255,255,0);
     if(spreadMode==SpreadMode::TOGETHER){
         switch(animationType){
-            case AnimationType::SLIDE:  this->slideAnimation(x,y);break;
+                // DISABLE SLIDE ANIMATION: unused
+            case AnimationType::SLIDE:  this->wordFadeAnimation(x,y);break;//this->slideAnimation(x,y);break;
             case AnimationType::WORDFADE:    this->wordFadeAnimation(x,y);break;
             case AnimationType::TARGETWORD:    this->targetWordAnimation(x,y);break;
         }
+        //ofDrawRectangle(0, 0, getWidth(), getHeight());
+        
     }else{
         switch(animationType){
             case AnimationType::SLIDE:  /*this->drawConstellationMask()*/this->constellationTrembleAnimation();break;
@@ -225,8 +225,16 @@ void FontPlayer::update(){
         font.drawStringAsShapes(wrappedText,ceil(x/fontScale),(y/fontScale));
         ofPopMatrix();*/
 
-        this->font.drawStringAsShapes(wrappedText,x,y);
-       
+        //this->font.drawStringAsShapes(wrappedText,x,y);
+        //this->drawWords(x, y);
+        ofVboMesh mesh;
+        mesh = this->font.getStringMesh(wrappedText, x, y);
+        
+        // draw
+        this->font.getFontTexture().bind();
+        mesh.draw();
+        this->font.getFontTexture().unbind();
+
         
         
     }else if(spreadMode==SpreadMode::SPREAD){
@@ -269,6 +277,38 @@ void FontPlayer::slideAnimation(int x,int y){
     }
 }
 
+void FontPlayer::drawWords(int x,int y){
+
+    // new approach: directly draw words
+    // get current word
+    vector <string> lineWords = ofSplitString(currentLineText," ");
+    float linePos = this->currentLetter - completedLineChars;
+    int currentWordI = 0;
+    int completedWordsLength = 0;
+    for(int i=0;i<lineWords.size();i++){
+        if(linePos>=completedWordsLength && linePos < completedWordsLength + lineWords[i].length()+1){
+            currentWordI = i;
+            break;
+        }else{
+            completedWordsLength += lineWords[i].length()+1;
+        }
+    }
+    
+    string currentWord = lineWords[currentWordI];
+
+    
+    //this->font.drawStringAsShapes(wrappedText.substr(0,completedLineChars+completedWordsLength), x, y);
+    
+    ofVboMesh mesh;
+    mesh = this->font.getStringMesh(wrappedText.substr(0,completedLineChars+completedWordsLength), x, y);
+    
+    // draw
+    this->font.getFontTexture().bind();
+    mesh.draw();
+    this->font.getFontTexture().unbind();
+
+}
+
 void FontPlayer::wordFadeAnimation(int x,int y){
 
     if(reverse) return wordFadeAnimationReverse(x, y);
@@ -303,7 +343,7 @@ void FontPlayer::wordFadeAnimation(int x,int y){
 
     // calc current word's progress
     float wordProgress = ofClamp((linePos-completedWordsLength) / (currentWord.length()-1),0,1);
-    //wordProgress = 3*pow(wordProgress,2) - (2*pow(wordProgress,3));
+    wordProgress = 3*pow(wordProgress,2) - (2*pow(wordProgress,3));
 
     // fade in current word's block
     ofSetColor(color,255*wordProgress);

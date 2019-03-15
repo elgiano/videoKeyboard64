@@ -132,6 +132,8 @@ private:
     void drawConstellationZooming();
     void drawConstellationMask();
     void drawConstellationWord(int i,float zoom=1.0f);
+    
+    void drawWords(int x,int y);
 
 
 
