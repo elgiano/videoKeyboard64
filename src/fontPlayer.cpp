@@ -430,9 +430,9 @@ void FontPlayer::wordFadeAnimationConstellation(){
 void FontPlayer::targetWordAnimation(int x, int y){
 
     ofEnableAlphaBlending();
-    float turningPoint = 100.0f/lettersPerSecond/animationSpeed;
+    float turningPoint = targetWords.size()>0 ? 100.0f/lettersPerSecond/animationSpeed : 0;
     float delay = 0;//turningPoint;
-    float endPoint = 4*turningPoint;
+    float endPoint =  targetWords.size()>0 ? 4*turningPoint : 300.0f/lettersPerSecond/animationSpeed;
     // FIRST FADE IN TARGET WORDS
 
     float progress=1.0;
