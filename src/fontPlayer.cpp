@@ -138,7 +138,7 @@ void FontPlayer::parseTargetWords(){
 }
 
 std::string FontPlayer::setFontSize(int size){
-    this->font.load("../HelveticaNeue.ttf",size,true,true,true,0,0);
+    this->font.load("../NotoSans-Regular.ttf",size,true,true,true,0,0);
     fontSize = size;
     return this->wrappedText = this->wrapText();
 }
