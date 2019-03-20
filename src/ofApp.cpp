@@ -484,13 +484,22 @@ void ofApp::drawVideoInLayout(int movieN){
     case 3:
       // Split screen vertical and horizontal once
         if (layoutPos<2) {
-            if(blending_multiply && thisLayoutInit[layoutPos]++==0){
+            /*if(blending_multiply && thisLayoutInit[layoutPos]++==0){
                 drawWhiteBg(screenW/2*layoutPos,(screenH/2-(screenW/2*h/w))/2+(layout>0?0:screenH/2), screenW/2, screenW/2*h/w);
-            }
-          thisTexture.drawSubsection(screenW/2*layoutPos,	(layout>0?0:screenH/2), screenW/2, screenH/2,
+            }*/
+          /*thisTexture.drawSubsection(screenW/2*layoutPos,	(layout>0?0:screenH/2), screenW/2, screenH/2,
               w*((1-(screenW/screenH))/2),0,
-              w*(screenW/screenH),h);
-          if(blending_multiply){drawBrightnessLayer(screenW/2*layoutPos,(screenH/2-(screenW/2*h/w))/2+(layout>0?0:screenH/2), screenW/2, screenW/2*h/w);}
+              w*(screenW/screenH),h);*/
+            if(blending_multiply && thisLayoutInit[layoutPos]++==0){
+                drawWhiteBg(screenW/2*(layoutPos%2),(screenH/2*(layoutPos/2%2)),
+                            screenW/2, screenH/2);
+                
+            }
+            thisTexture.drawSubsection(screenW/2*(layoutPos%2),(screenH/2*(layoutPos/2%2)),
+                                       screenW/2, screenH/2,
+                                       w*((1-(screenW/screenH))/2),0,
+                                       w*(screenW/screenH),h);
+          //if(blending_multiply){drawBrightnessLayer(screenW/2*layoutPos,(screenH/2-(screenW/2*h/w))/2+(layout>0?0:screenH/2), screenW/2, screenW/2*h/w);}
         }else{
             if(blending_multiply && thisLayoutInit[layoutPos]++==0){
                 drawWhiteBg(0,(layout>0?screenH/2:0),screenW,screenH/2);
@@ -515,16 +524,25 @@ void ofApp::drawVideoInLayout(int movieN){
           break;
     case 5:
       // split in 4
-          if(blending_multiply && thisLayoutInit[layoutPos]++==0){
+          /*if(blending_multiply && thisLayoutInit[layoutPos]++==0){
               drawWhiteBg(screenW/2*(layoutPos%2),(screenH/2*(layoutPos/2%2))+(screenH/2-(screenW/2*h/w))/2,
                           screenW/2, screenH/2);
 
-          }
-          thisTexture.drawSubsection(screenW/2*(layoutPos%2),
+          }*/
+          /*thisTexture.drawSubsection(screenW/2*(layoutPos%2),
                            (screenH/2*(layoutPos/2%2))+(screenH/2-(screenW/2*h/w))/2,
                            screenW/2, screenH/2,
                            w*((1-(screenW/screenH))/2),0,
-                           w*(screenW/screenH),h);
+                           w*(screenW/screenH),h);*/
+          if(blending_multiply && thisLayoutInit[layoutPos]++==0){
+              drawWhiteBg(screenW/2*(layoutPos%2),(screenH/2*(layoutPos/2%2)),
+                          screenW/2, screenH/2);
+              
+          }
+          thisTexture.drawSubsection(screenW/2*(layoutPos%2),(screenH/2*(layoutPos/2%2)),
+                                     screenW/2, screenH/2,
+                                     w*((1-(screenW/screenH))/2),0,
+                                     w*(screenW/screenH),h);
 
 
           /*if(blending_multiply){drawBrightnessLayer(screenW/2*(layoutPos%2),
