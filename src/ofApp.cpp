@@ -491,11 +491,11 @@ void ofApp::drawVideoInLayout(int movieN){
               w*((1-(screenW/screenH))/2),0,
               w*(screenW/screenH),h);*/
             if(blending_multiply && thisLayoutInit[layoutPos]++==0){
-                drawWhiteBg(screenW/2*(layoutPos%2),(screenH/2*(layoutPos/2%2)),
+                drawWhiteBg(screenW/2*(layoutPos%2),(layout<0?screenH/2:0),
                             screenW/2, screenH/2);
                 
             }
-            thisTexture.drawSubsection(screenW/2*(layoutPos%2),(screenH/2*(layoutPos/2%2)),
+            thisTexture.drawSubsection(screenW/2*(layoutPos%2),(layout<0?screenH/2:0),
                                        screenW/2, screenH/2,
                                        w*((1-(screenW/screenH))/2),0,
                                        w*(screenW/screenH),h);
