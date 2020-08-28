@@ -7,6 +7,10 @@
 
 #include "movieContainer.hpp"
 
+void MovieContainer::capture(int deviceId){
+    contentType = MovieType::capture;
+}
+
 bool MovieContainer::load(std::string name){
     
     // identify content format
@@ -115,6 +119,8 @@ bool  MovieContainer::isPlaying() const{
         return fontPlayer->isPlaying();
     }else if(contentType==MovieType::image){
         return imagePlayer->isPlaying();
+    }else if(contentType==MovieType::capture){
+        return true;
     }
 };
 void  MovieContainer::setSpeed(float speed){

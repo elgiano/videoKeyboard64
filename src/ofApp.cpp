@@ -44,6 +44,7 @@ void ofApp::setup(){
 void ofApp::initCapture(){
     cout << "initCapture()" << endl;
     for(int i=0;i<n_captures; i++){
+        //capture[i].listDevices();
         capture[i].setDeviceID(capture_sources[i]);
         capture[i].setDesiredFrameRate(60);
         capture[i].initGrabber(screenW,screenH);
@@ -233,8 +234,9 @@ void ofApp::loadCaptureGroup(int deviceID,int layout){
         capture_keys[n_captures] = n_videos;
         initVideoVariables(n_videos);
         layout_for_video[n_videos] = layout;
+        movie[n_videos].capture(deviceID);
 
-        cout << "Placing capture #"<< ofToString(n_captures) <<"at key " << ofToString(n_videos)  << endl;
+          cout << "Placing capture #"<< ofToString(n_captures) <<"-"<< ofToString(deviceID)<<"at key " << ofToString(n_videos)  << endl;
 
         n_captures++;
         n_videos++;
@@ -268,6 +270,7 @@ void ofApp::loadSet(int set_n){
     for(int i=0;i<autoplay[1];i++){
       stopVideo(autoplay[0]+1);
     }
+    setLoopState(OF_LOOP_NORMAL);
   }
 
   activeSet = set_n;
@@ -283,6 +286,7 @@ void ofApp::loadSet(int set_n){
         }
     }*/
     for(auto autoplay : autoplayGroupsForSet[activeSet]){
+        setLoopState(OF_LOOP_NONE);
         cout << "autoplay " << endl;
         for(int i=0;i<autoplay[1];i++){
             playVideo(autoplay[0]+1,1.0);
@@ -371,7 +375,7 @@ void ofApp::drawVideoInLayout(int movieN){
     // logarithmic layering * fade_in_transparency * fade_out_transparency * dynamic level
     //videoColor.set(255,255,255,255/log2(layoutCount[abs(layout)][layoutPos]+2)*fi_alpha*fo_alpha*thisDyn);
 
-      videoColor.set(255,255,255,255/log2(layout_count_temp+2)*fi_alpha*fo_alpha*thisDyn);
+      videoColor.set(255,255,255,255/pow(layout_count_temp,2.0f/3)*fi_alpha*fo_alpha*thisDyn);
 
   }
   //videoColor.setSaturation(saturation);
@@ -441,7 +445,7 @@ void ofApp::drawVideoInLayout(int movieN){
           }
       thisTexture.draw(0,(screenH-(screenW*h/w))/2, screenW, screenW*h/w);*/
           //if(blending_multiply){drawBrightnessLayer(0,(screenH-(screenW*h/w))/2, screenW, screenW*h/w);}
-          if( (blending_multiply || blending_add )&& layout_init_temp++==0){
+          if( /*(blending_multiply || blending_add )&&*/ layout_init_temp++==0){
               //drawWhiteBg(0,(screenH-(screenW*h/w))/2, screenW, screenW*h/w);
               drawWhiteBg(0,0, screenW, screenH);
           }
@@ -464,7 +468,7 @@ void ofApp::drawVideoInLayout(int movieN){
     case 1:
       // Split screen vertical
       //movie[movieN].draw(screenW/2*layoutPos,(screenH-(screenW/2*h/w))/2, screenW/2, screenW/2*h/w);
-          if(blending_multiply && thisLayoutInit[layoutPos]++==0){
+          if(/*blending_multiply &&*/ thisLayoutInit[layoutPos]++==0){
               drawWhiteBg(screenW/2*layoutPos,0,screenW/2,screenH);
           }
      thisTexture.drawSubsection(screenW/2*layoutPos,0,screenW/2,screenH,((screenH*w/h)-(screenW/2))*w/screenW/2,0,w*(1-((screenH*w/h)-(screenW/2))/screenW),h);
@@ -474,7 +478,7 @@ void ofApp::drawVideoInLayout(int movieN){
     case 2:
       // Split screen horizontal
       //movie[movieN].draw((screenW-(screenH/2*w/h))/2,screenH/2*layoutPos, screenH/2*w/h, screenH/2)
-          if(blending_multiply && thisLayoutInit[layoutPos]++==0){
+          if(/*blending_multiply &&*/ thisLayoutInit[layoutPos]++==0){
               drawWhiteBg(0,screenH/2*layoutPos,screenW,screenH/2);
           }
       thisTexture.drawSubsection(0,screenH/2*layoutPos,screenW,screenH/2,0,((screenW*h/w)-(screenH/2))*h/screenH/2,w,h*(1-((screenW*h/w)-(screenH/2))/screenH));
@@ -490,7 +494,7 @@ void ofApp::drawVideoInLayout(int movieN){
           /*thisTexture.drawSubsection(screenW/2*layoutPos,	(layout>0?0:screenH/2), screenW/2, screenH/2,
               w*((1-(screenW/screenH))/2),0,
               w*(screenW/screenH),h);*/
-            if(blending_multiply && thisLayoutInit[layoutPos]++==0){
+            if(/*blending_multiply && */thisLayoutInit[layoutPos]++==0){
                 drawWhiteBg(screenW/2*(layoutPos%2),(layout<0?screenH/2:0),
                             screenW/2, screenH/2);
                 
@@ -501,7 +505,7 @@ void ofApp::drawVideoInLayout(int movieN){
                                        w*(screenW/screenH),h);
           //if(blending_multiply){drawBrightnessLayer(screenW/2*layoutPos,(screenH/2-(screenW/2*h/w))/2+(layout>0?0:screenH/2), screenW/2, screenW/2*h/w);}
         }else{
-            if(blending_multiply && thisLayoutInit[layoutPos]++==0){
+            if(/*blending_multiply && */thisLayoutInit[layoutPos]++==0){
                 drawWhiteBg(0,(layout>0?screenH/2:0),screenW,screenH/2);
             }
           thisTexture.drawSubsection(0,(layout>0?screenH/2:0),screenW,screenH/2,0,((screenW*h/w)-(screenH/2))*h/screenH/2,w,h*(1-((screenW*h/w)-(screenH/2))/screenH));
@@ -513,7 +517,7 @@ void ofApp::drawVideoInLayout(int movieN){
     //triptych
           // x0,y0,w,h,
           // sx0,sy0, sw,sh
-          if(blending_multiply && thisLayoutInit[layoutPos]++==0){
+          if(/*blending_multiply &&*/ thisLayoutInit[layoutPos]++==0){
               drawWhiteBg(screenW/3*layoutPos,0,screenW/3,screenH);
           }
           thisTexture.drawSubsection(screenW/3*layoutPos,0,screenW/3,screenH,
@@ -534,7 +538,7 @@ void ofApp::drawVideoInLayout(int movieN){
                            screenW/2, screenH/2,
                            w*((1-(screenW/screenH))/2),0,
                            w*(screenW/screenH),h);*/
-          if(blending_multiply && thisLayoutInit[layoutPos]++==0){
+          if(/*blending_multiply &&*/ thisLayoutInit[layoutPos]++==0){
               drawWhiteBg(screenW/2*(layoutPos%2),(screenH/2*(layoutPos/2%2)),
                           screenW/2, screenH/2);
               
@@ -725,6 +729,9 @@ void ofApp::update(){
             //ofLogVerbose() << "updated "+ofToString(i)+ofToString(active_videos[i]);
         }
     }else if(movie[i].isPlaying() ){movie[i].stop();}
+      if(loopState == OF_LOOP_NONE && !movie[i].isPlaying()){
+          stopVideo(i);
+      }
   }
 }
 

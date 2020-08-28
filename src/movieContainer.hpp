@@ -20,7 +20,8 @@ enum class MovieType {
     not_loaded,
     hap,
     txt,
-    image
+    image,
+    capture
 };
 
 class MovieContainer {
@@ -37,6 +38,7 @@ class MovieContainer {
 
     
         bool load(std::string name);
+        void capture(int deviceId);
         virtual ofTexture *         getTexture();
         virtual float               getWidth() const;
         virtual float               getHeight() const;

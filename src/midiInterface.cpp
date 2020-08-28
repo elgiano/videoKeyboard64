@@ -73,6 +73,10 @@ void ofApp::newMidiMessage(ofxMidiMessage& msg) {
               changeAllSpeed((float) msg.value/midiMaxVal);
               cout << "speed" << endl;
               break;
+              case MidiCommand::speedReset:
+                  changeAllSpeed((float) 0.5);
+                  cout << "speed reset" << endl;
+                  break;
             case MidiCommand::speed_reverse:
               speed_reverse = msg.value != 0;
               changeAllSpeed(-1); // only update direction;

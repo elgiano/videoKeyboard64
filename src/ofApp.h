@@ -38,7 +38,7 @@ class ofApp : public ofBaseApp, public ofxMidiListener{
         int brightness_opacity;
 		int black_screen=0;
 
-		bool blending_multiply=true;
+		bool blending_multiply=false;
 		bool blending_add=false;
 		bool isDynamic = false;
 		bool isFading = true;
